@@ -17,6 +17,11 @@ import ModalScreen from './mainScreens/ModalScreen'
 //==============================================================================
 //==============================================================================
 var slider;
+var requestUrls;
+var requestKey;
+
+var filterUrl;
+var filterArray = [{ name: 1 }, { name: 2 }];
 //==============================================================================
 //==============================================================================
 //==============================================================================
@@ -86,15 +91,24 @@ class MenuScreen extends React.Component
           </View>
 
           <Modal
-          animationType="fade"
-          transparent={true}
-          visible={this.state.modalVisible}
-          onRequestClose={() => {this.setState({modalVisible: !this.state.modalVisible}); }}>
+            animationType="slide"
+            transparent={true}
+            visible={this.state.modalVisible}
+            onRequestClose={() => {this.setState({modalVisible: !this.state.modalVisible}); }}>
+
             <View style={{
               flex: 1,
               flexDirection: 'column',
               justifyContent: 'center',
               alignItems: 'center',}}>
+              <ModalScreen urlImage={this.state.modalImageUrl} close={() => { this.setState({modalVisible: !this.state.modalVisible}); }}/>
+            </View>
+
+            <Modal
+            animationType="fade"
+            transparent={true}
+            visible={this.state.modalVisible}
+            onRequestClose={() => {this.setState({modalVisible: !this.state.modalVisible}); }}>
               <TouchableOpacity style={{
                 width: Dimensions.get('window').width,
                 height: Dimensions.get('window').height,
@@ -103,9 +117,7 @@ class MenuScreen extends React.Component
                 onPress={() => {this.setState({modalVisible: !this.state.modalVisible}); }}
                 activeOpacity={0.5}>
               </TouchableOpacity>
-
-              <ModalScreen urlImage={this.state.modalImageUrl} close={() => { this.setState({modalVisible: !this.state.modalVisible}); }}/>
-            </View>
+            </Modal>
           </Modal>
         </View>
         <TopNavigator/>
@@ -155,40 +167,169 @@ class BasketScreen extends React.Component
 //==============================================================================
 //==============================================================================
 //==============================================================================
-class test extends React.Component
+class ComboSets extends React.Component
 {
   constructor(props) {
     super(props);
     this.name = props;
   }
 
+  componentWillMount(){
+    //console.log(filterArray[0]);
+  }
+
   render(){
     return(
-        <MainTabs variable={1}/>
+        <MainTabs  products = { filterArray[0] }/>
     );
   }
 }
 //==============================================================================
 //==============================================================================
 //==============================================================================
-class notest extends React.Component
+class MiniSets extends React.Component
 {
+  componentWillMount(){
+    //console.log(filterArray[1]);
+  }
+
   render(){
     return(
-      <View style={styles.container}>
-        <Text>notest</Text>
-      </View>
+        <MainTabs  products = { filterArray[1] }/>
+    );
+  }
+}
+//==============================================================================
+//==============================================================================
+//==============================================================================
+class Sets extends React.Component
+{
+  componentWillMount(){
+    //console.log(filterArray[1]);
+  }
+
+  render(){
+    return(
+        <MainTabs  products = { filterArray[2] }/>
+    );
+  }
+}
+//==============================================================================
+//==============================================================================
+//==============================================================================
+class BrandedRolls extends React.Component
+{
+  componentWillMount(){
+    //console.log(filterArray[1]);
+  }
+
+  render(){
+    return(
+        <MainTabs  products = { filterArray[3] }/>
+    );
+  }
+}
+//==============================================================================
+//==============================================================================
+//==============================================================================
+class MiniRolls extends React.Component
+{
+  componentWillMount(){
+    //console.log(filterArray[1]);
+  }
+
+  render(){
+    return(
+        <MainTabs  products = { filterArray[4] }/>
+    );
+  }
+}
+//==============================================================================
+//==============================================================================
+//==============================================================================
+class TheFriedRolls extends React.Component
+{
+  componentWillMount(){
+    //console.log(filterArray[1]);
+  }
+
+  render(){
+    return(
+        <MainTabs  products = { filterArray[5] }/>
+    );
+  }
+}
+//==============================================================================
+//==============================================================================
+//==============================================================================
+class BakedRolls extends React.Component
+{
+  componentWillMount(){
+    //console.log(filterArray[1]);
+  }
+
+  render(){
+    return(
+        <MainTabs  products = { filterArray[6] }/>
+    );
+  }
+}
+//==============================================================================
+//==============================================================================
+//==============================================================================
+class Sushi extends React.Component
+{
+  componentWillMount(){
+    //console.log(filterArray[1]);
+  }
+
+  render(){
+    return(
+        <MainTabs  products = { filterArray[7] }/>
+    );
+  }
+}
+//==============================================================================
+//==============================================================================
+//==============================================================================
+class Pizza extends React.Component
+{
+  componentWillMount(){
+    //console.log(filterArray[1]);
+  }
+
+  render(){
+    return(
+        <MainTabs  products = { filterArray[8] }/>
+    );
+  }
+}
+//==============================================================================
+//==============================================================================
+//==============================================================================
+class Paste extends React.Component
+{
+  componentWillMount(){
+    //console.log(filterArray[1]);
+  }
+
+  render(){
+    return(
+        <MainTabs  products = { filterArray[9] }/>
     );
   }
 }
 
-var OBJ = MainTabs;
 //==============================================================================
 //==============================================================================
 //==============================================================================
 export default class App extends React.Component {
   componentWillMount(){
     slider = this.props.sliderData;
+    requestUrls = this.props.requestUrls;
+    requestKey = this.props.requestKey;
+    filterUrl = requestUrls.find(_item => _item.name == 'url_products').url;
+    filterArray = this.props.filterArray;
   }
 
   render() {
@@ -200,8 +341,16 @@ export default class App extends React.Component {
 //==============================================================================
 
 const TABS = {
-  Тест: { screen: test },
-  Нетест: { screen: notest }
+  'Комбо-наборы': { screen: ComboSets },
+  'Мини-сеты': { screen: MiniSets },
+  'Наборы': { screen: Sets },
+  'Фирменные роллы': { screen: BrandedRolls },
+  'Мини-роллы': { screen: MiniRolls },
+  'Жареные-роллы': { screen: TheFriedRolls },
+  'Запеченные-роллы': { screen: BakedRolls },
+  'Суши': { screen: Sushi },
+  'Пицца': { screen: Pizza },
+  'Паста': { screen: Paste },
 }
 const TOP_NAVIGATOR = createMaterialTopTabNavigator(TABS,
   {
@@ -209,6 +358,7 @@ const TOP_NAVIGATOR = createMaterialTopTabNavigator(TABS,
     animationEnabled: false,
     swipeEnabled: true,
     tabBarOptions: {
+      scrollEnabled: true,
       activeTintColor: 'black',
       inactiveTintColor: 'gray',
       labelStyle: {

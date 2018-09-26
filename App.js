@@ -14,6 +14,8 @@ var options;
 var directories;
 var settings;
 var home;
+
+var filterArray = [{ name: 1 }, { name: 2 }];
 //==============================================================================
 //==============================================================================
 //==============================================================================
@@ -28,6 +30,11 @@ class LoadingScreen extends React.Component
     {
       cityID: 'none',
     }
+  }
+
+  componentWillMount()
+  {
+    this.firstQuery();
   }
 
   firstQuery()
@@ -46,7 +53,7 @@ class LoadingScreen extends React.Component
           directories = this.state.sourceDirectories;
           settings = this.state.sourceSettings;
           home = this.state.sourceHome;
-          this.loadCityID();
+          this.tabsProduct();
         });
 
       })
@@ -55,13 +62,38 @@ class LoadingScreen extends React.Component
       });
   }
 
-  componentWillMount()
+  tabsProduct()
   {
-    this.firstQuery();
+    var _filterUrl = options.urls.find(_item => _item.name == 'url_products').url;
+    var _filterArray = home.menu.items.map((_item, _i) => {
+      var _goOn = false;
+      if(_i == Object.keys(home.menu.items).length-1) _goOn=true;
+      //console.log('ff= ' + _i + ' ' + (Object.keys(home.menu.items).length-1));
+      return this.filterProducts(_filterUrl, _item.link.params[0].name, _item.link.params[0].value, _i, _goOn);
+    });
+  }
+
+  filterProducts(_filterUrl, _params, _catalogId, _i, _goOn,)
+  {
+    return fetch(_filterUrl + '?key=' + KEY + '&' + _params + '=' + _catalogId)
+      .then((response) => response.json())
+      .then((responseJson) => {
+
+        this.setState({
+          source: responseJson.products,
+        }, function(){
+          filterArray[_i] = this.state.source;
+          if(_goOn) this.loadCityID();
+        });
+      })
+      .catch((_error) =>{
+        Alert.alert('Ошибка','Проверьте сеть');
+      });
   }
 
   loadCityID = async () => 
   {
+    //console.log(filterArray[1]);
     try 
     {
       const _VALUE = await AsyncStorage.getItem('cityID');
@@ -82,15 +114,22 @@ class LoadingScreen extends React.Component
     }
     else
     {
-      const { navigate } = this.props.navigation;
-      navigate('main', { refresh: this, cityName: directories.city.find(_item => _item.id == this.state.cityID).name});
+      if(Object.keys(filterArray).length==Object.keys(home.menu.items).length)
+      {
+        const { navigate } = this.props.navigation;
+        navigate('main', { refresh: this, cityName: directories.city.find(_item => _item.id == this.state.cityID).name});
+      }
+      else
+      {
+        this.tabsProduct();
+      }
     }
   }
 
   render()
   {
     return(
-      <LoadForm />
+      <LoadForm/>
     );
   }
 }
@@ -169,7 +208,7 @@ class MainScreen extends React.Component{
   render()
   {
     return(
-      <MainForm sliderData = { home.slider }/>
+      <MainForm sliderData = { home.slider }  filterArray = { filterArray } requestUrls = {options.urls} requestKey = {KEY}/>
     );
   }
 }
