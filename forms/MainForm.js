@@ -1,5 +1,6 @@
 import React from 'react';
-import { 
+import {
+  Animated,
   StyleSheet, 
   Image,
   View, 
@@ -9,7 +10,8 @@ import {
   Modal, 
   Dimensions,
   TouchableOpacity,
-  Alert  } from 'react-native';
+  Alert,
+  Platform  } from 'react-native';
 import { createMaterialTopTabNavigator } from 'react-navigation';
 import MainTabs from './mainScreens/MainTabs';
 import ModalScreen from './mainScreens/ModalScreen'
@@ -22,6 +24,12 @@ var requestKey;
 
 var filterUrl;
 var filterArray = [{ name: 1 }, { name: 2 }];
+
+const HEADER_MAX_HEIGHT = 200;
+const HEADER_MIN_HEIGHT = 0;
+const HEADER_SCROLL_DISTANCE = HEADER_MAX_HEIGHT - HEADER_MIN_HEIGHT;
+
+scrollY = new Animated.Value(0);
 //==============================================================================
 //==============================================================================
 //==============================================================================
@@ -42,19 +50,27 @@ class MenuScreen extends React.Component
     {
       modalImageUrl: '.wall.png',
       modalVisible: false,
+      modalVisibleBlack: false,
+      scrollY: new Animated.Value(0),
+      test: 1,
     }
   }
 
   onPressSlider(_urlImage)
   {
-    this.setState({modalImageUrl: _urlImage, modalVisible: !this.state.modalVisible})
+    this.setState({
+      modalImageUrl: _urlImage, 
+      modalVisibleBlack: !this.state.modalVisibleBlack, 
+      modalVisible: !this.state.modalVisible
+    });
   }
 
   render(){
     let _sliderRender = slider.items.map((item, i)=>{
       return(
         <View key={i} style={{ paddingRight: 10, paddingLeft: 10 }}>
-          <TouchableOpacity onPress={ () => this.onPressSlider(item.image.url) } activeOpacity={1}>
+          <TouchableOpacity onPress={ () => 
+            this.onPressSlider(item.image.url) } activeOpacity={1}>
             <Image
               resizeMode={'contain'} 
               source={{uri: item.image.url}} 
@@ -71,9 +87,88 @@ class MenuScreen extends React.Component
       );
     });
 
+    let _modalAndroid = 
+      <Modal
+        animationType="slide"
+        transparent={true}
+        visible={this.state.modalVisible}
+        onRequestClose={() => {this.setState({modalVisible: !this.state.modalVisible}); }}>
+
+        <View style={{
+          flex: 1,
+          flexDirection: 'column',
+          justifyContent: 'center',
+          alignItems: 'center',}}>
+          <ModalScreen urlImage={this.state.modalImageUrl} close={() => { this.setState({modalVisible: !this.state.modalVisible}); }}/>
+        </View>
+
+        <Modal
+        animationType="fade"
+        transparent={true}
+        visible={this.state.modalVisible}
+        onRequestClose={() => {this.setState({modalVisible: !this.state.modalVisible}); }}>
+          <TouchableOpacity style={{
+            width: Dimensions.get('window').width,
+            height: Dimensions.get('window').height,
+            backgroundColor: 'black',
+            opacity: 0.5,}}
+            onPress={() => {this.setState({modalVisible: !this.state.modalVisible}); }}
+            activeOpacity={0.5}>
+          </TouchableOpacity>
+        </Modal>
+      </Modal>
+
+    let _modalIOS =
+      <Modal
+        animationType="fade"
+        transparent={true}
+        visible={this.state.modalVisibleBlack}
+        onRequestClose={() => {
+          this.setState({modalVisible: !this.state.modalVisible}); 
+          this.setState({modalVisibleBlack: !this.state.modalVisibleBlack});}}>
+        <TouchableOpacity style={{
+          width: Dimensions.get('window').width,
+          height: Dimensions.get('window').height,
+          backgroundColor: 'black',
+          opacity: 0.5,}}
+          onPress={() => {
+            this.setState({modalVisible: !this.state.modalVisible}); 
+            this.setState({modalVisibleBlack: !this.state.modalVisibleBlack});
+          }}
+          activeOpacity={0.5}>
+        </TouchableOpacity>
+
+        <Modal
+          animationType="slide"
+          transparent={true}
+          visible={this.state.modalVisible}
+          onRequestClose={() => { 
+            this.setState({modalVisible: !this.state.modalVisible}); 
+            this.setState({modalVisibleBlack: !this.state.modalVisibleBlack});
+        }}>
+          <View style={{
+            flex: 1,
+            flexDirection: 'column',
+            justifyContent: 'center',
+            alignItems: 'center',
+          }}>
+            <ModalScreen urlImage={this.state.modalImageUrl} close={() => { 
+              this.setState({modalVisible: !this.state.modalVisible}); 
+              this.setState({modalVisibleBlack: !this.state.modalVisibleBlack});
+            }}/>
+          </View>
+        </Modal>
+      </Modal>
+
+    const headerHeight = this.state.scrollY.interpolate({
+      inputRange: [0, HEADER_SCROLL_DISTANCE],
+      outputRange: [HEADER_MAX_HEIGHT, HEADER_MIN_HEIGHT],
+      extrapolate: 'clamp',
+    });
+
     return(
       <View style={styles.container}>
-        <View style = { styles.menuHeader }>
+        <Animated.View style = {[styles.menuHeader, {height: headerHeight}]}>
           <View style = {{ height: 130 }}>
             <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>
               {_sliderRender}
@@ -86,41 +181,23 @@ class MenuScreen extends React.Component
             </TouchableOpacity>
 
             <TouchableOpacity style={styles.headerButtons}>
-              <Text style={styles.textButtons}> Промокод </Text>
+              <Text style={styles.textButtons}> Промокод {this.state.test}</Text>
             </TouchableOpacity>
           </View>
 
           <Modal
-            animationType="slide"
-            transparent={true}
-            visible={this.state.modalVisible}
-            onRequestClose={() => {this.setState({modalVisible: !this.state.modalVisible}); }}>
-
-            <View style={{
-              flex: 1,
-              flexDirection: 'column',
-              justifyContent: 'center',
-              alignItems: 'center',}}>
-              <ModalScreen urlImage={this.state.modalImageUrl} close={() => { this.setState({modalVisible: !this.state.modalVisible}); }}/>
-            </View>
-
-            <Modal
             animationType="fade"
             transparent={true}
             visible={this.state.modalVisible}
-            onRequestClose={() => {this.setState({modalVisible: !this.state.modalVisible}); }}>
-              <TouchableOpacity style={{
-                width: Dimensions.get('window').width,
-                height: Dimensions.get('window').height,
-                backgroundColor: 'black',
-                opacity: 0.5,}}
-                onPress={() => {this.setState({modalVisible: !this.state.modalVisible}); }}
-                activeOpacity={0.5}>
-              </TouchableOpacity>
-            </Modal>
+            onRequestClose={() => this.setState({modalVisible: !this.state.modalVisible})}>
+            <ModalScreen
+              urlImage={this.state.modalImageUrl}             
+              onClose={() => {
+                this.setState({modalVisible: !this.state.modalVisible});}}/>
           </Modal>
-        </View>
-        <TopNavigator/>
+        </Animated.View>
+
+        <TopNavigator scrollAnimated = { this.state.test }/>
       </View>
     );
   }
@@ -180,7 +257,7 @@ class ComboSets extends React.Component
 
   render(){
     return(
-        <MainTabs  products = { filterArray[0] }/>
+        <MainTabs  products = { filterArray[0] } onScrollY={ this.props.scrollAnimated }/>
     );
   }
 }
@@ -411,7 +488,7 @@ const styles = StyleSheet.create({
     right: 0,
     zIndex: 10,
     padding: 3,
-    height: 200,
+    //height: 200,
     flexDirection: 'column',
     justifyContent: 'center',
     alignItems: 'center',

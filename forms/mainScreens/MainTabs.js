@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, Image, View, AppRegistry, Text, Alert, ScrollView } from 'react-native';
+import { Animated, StyleSheet, Image, View, AppRegistry, Text, Alert, ScrollView } from 'react-native';
 import ComponentItems from './ComponentItems';
 //==============================================================================
 //==============================================================================
@@ -22,7 +22,11 @@ export default class topTabComponent extends React.Component {
 
     return(
       <View style={styles.container}>
-        <ScrollView>
+        <ScrollView 
+          scrollEventThrottle={16}
+          onScroll={Animated.event(
+          [{nativeEvent: {contentOffset: {y: this.props.onScrollY}}}]
+        )}>
           {_productsRender}
         </ScrollView>
       </View>
