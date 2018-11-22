@@ -20,7 +20,7 @@ export default class ProfileLoginForm extends React.Component {
                   height: 50,
                   marginBottom: 15,
                 }}/>
-              <Text style={styles.boldText}>{this.props.profileToken.user.info.user_name}</Text>
+              <Text style={styles.boldText}>{this.props.profileToken.info.user_name}</Text>
             </View>
             <View>
               <TouchableOpacity style={styles.buttonStyle} onPress={()=>{this.props.exit()}}>

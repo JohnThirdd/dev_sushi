@@ -16,6 +16,7 @@ var settings;
 var home;
 var basketObj = [{name: 'first'}];
 var requestCityId;
+var userInfo = '0';
 
 var filterArray = [{ name: 1 }, { name: 2 }];
 //==============================================================================
@@ -36,10 +37,24 @@ class LoadingScreen extends React.Component
 
   componentWillMount()
   {
-    this.firstQuery();
+    this.loadToken();
   }
 
-  
+  loadToken = async () => {
+    try
+    {
+      const notArray = await AsyncStorage.getItem('@MySuperStore:profileToken');
+      if(notArray==null || notArray=='0')
+        this.firstQuery();
+      else
+        this.firstQueryToken(notArray);
+      console.log(notArray);
+    }
+    catch (er)
+    {
+      Alert.alert('Система обнаружения проблем', 'Вот что обнаружено: ' + er.toString());
+    }
+  }
 
   firstQuery()
   {
@@ -57,6 +72,34 @@ class LoadingScreen extends React.Component
           directories = this.state.sourceDirectories;
           settings = this.state.sourceSettings;
           home = this.state.sourceHome;
+          this.tabsProduct();
+        });
+
+      })
+      .catch((_error) =>{
+        Alert.alert('Ошибка','Проверьте сеть');
+      });
+  }
+
+  firstQueryToken(_token)
+  {
+    return fetch(FIRST_QUERY_URL + '?key=' + KEY + '&token=' + _token)
+      .then((response) => response.json())
+      .then((responseJson) => {
+
+        this.setState({
+          sourceOptions: responseJson.options,
+          sourceDirectories: responseJson.directories,
+          sourceSettings: responseJson.settings,
+          sourceHome: responseJson.home,
+          sourceUser: responseJson.user,
+        }, function(){
+          options = this.state.sourceOptions;
+          directories = this.state.sourceDirectories;
+          settings = this.state.sourceSettings;
+          home = this.state.sourceHome;
+          userInfo = this.state.sourceUser;
+          console.log('' + userInfo);
           this.tabsProduct();
         });
 
@@ -237,6 +280,7 @@ class MainScreen extends React.Component{
         cityName = {this.props.navigation.state.params.cityName}
         basketObj = { basketObj }
         requestCityId = {requestCityId}
+        userInfo = {userInfo}
       />
     );
   }

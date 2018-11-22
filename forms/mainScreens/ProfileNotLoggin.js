@@ -5,53 +5,51 @@ import RegForm from './RegForm';
 //==============================================================================
 //==============================================================================
 var vremenniyObj = {
-  "user": {
   "info": {
-  "verify": true,
-  "active": true,
-  "token": "OXCaR0mR2vriiMET25LcK79r8GoHjl-j",
-  "email": "JohnThird@gmail.com",
-  "phone": "85552",
-  "user_name": "Джон",
-  "first_name": "Джон",
-  "second_name": "",
-  "last_name": "",
-  "sex": 0,
-  "city_id": 3876,
-  "city_name": "Кострома",
-  "orders_count": 0,
-  "partner": false,
-  "partner_feed": false
+    "verify": true,
+    "active": true,
+    "token": "OXCaR0mR2vriiMET25LcK79r8GoHjl-j",
+    "email": "JohnThird@gmail.com",
+    "phone": "85552",
+    "user_name": "Джон",
+    "first_name": "Джон",
+    "second_name": "",
+    "last_name": "",
+    "sex": 0,
+    "city_id": 3876,
+    "city_name": "Кострома",
+    "orders_count": 0,
+    "partner": false,
+    "partner_feed": false
   },
   "price_type": {
-  "id": 16,
-  "name": "Основной тип цен",
-  "description_short": "",
-  "image": {
-  "url": "",
-  "width": 0,
-  "height": 0
-  }
+    "id": 16,
+    "name": "Основной тип цен",
+    "description_short": "",
+    "image": {
+      "url": "",
+      "width": 0,
+      "height": 0
+    }
   },
   "cards": [
-  {
-  "id": 2346,
-  "number": "33588f4fd9c764c",
-  "type": "discount",
-  "balance": 0,
-  "percent": 0
-  },
-  {
-  "id": 2347,
-  "number": "33588f4fd9c764c",
-  "type": "ball",
-  "balance": 0,
-  "cashback": 10,
-  "max_percent": 50,
-  "relation": 1
-  }
+    {
+      "id": 2346,
+      "number": "33588f4fd9c764c",
+      "type": "discount",
+      "balance": 0,
+      "percent": 0
+    },
+    {
+      "id": 2347,
+      "number": "33588f4fd9c764c",
+      "type": "ball",
+      "balance": 0,
+      "cashback": 10,
+      "max_percent": 50,
+      "relation": 1
+    }
   ]
-  }
 };
 export default class ProfileNotLoggin extends React.Component {
 

@@ -36,6 +36,7 @@ var companyInfo;
 var filterArray = [{ name: 1 }, { name: 2 }];
 basketObj = [{name: 'first'}];
 sum = 0;
+userInfo = '0';
 
 const HEADER_MAX_HEIGHT = 200;
 const IMAGE_VIEW_HEIGHT = 130;
@@ -73,7 +74,7 @@ const profileInfo = (state = stateProfile, action) =>{
     case 'PLUS_C':
       return {profileToken: action.vari}
     case 'MINUS_C':
-      return {info: 4}
+      return {profileToken: userInfo}
   }
   return state
 }
@@ -765,6 +766,8 @@ export default class App extends React.Component {
     this.sumFunction();
     store.dispatch({type: 'PLUS_C'});
     requestCityId = this.props.requestCityId;
+    userInfo = this.props.userInfo;
+    profileStore.dispatch({type: 'MINUS_C'});
   }
 
   sumFunction(){

@@ -17,10 +17,10 @@ class ProfileForm extends React.Component {
                 requestKey={this.props.requestKey} 
                 requestUrls={this.props.requestUrls}
                 requestCityId={this.props.requestCityId}
-                vari={(_vari)=>{vari=_vari; this.props.plusCounter(); this.props.saveToken(_vari.user.info.token)}}
-                regSuccess={(_regSuccess)=>{vari=_regSuccess; this.props.plusCounter(); this.props.saveToken(_regSuccess.user.info.token)}}/>
+                vari={(_vari)=>{vari=_vari; this.props.plusCounter(); this.props.saveToken(_vari.info.token)}}
+                regSuccess={(_regSuccess)=>{vari=_regSuccess; this.props.plusCounter(); this.props.saveToken(_regSuccess.info.token)}}/>
               :
-              <ProfileLoginForm profileToken = {this.props.profileToken} exit={()=>{vari='0', this.props.plusCounter()}}/>
+              <ProfileLoginForm profileToken = {this.props.profileToken} exit={()=>{vari='0', this.props.plusCounter(); this.props.saveToken('0')}}/>
             }
           </View>
     );
