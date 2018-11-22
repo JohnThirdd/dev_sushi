@@ -14,6 +14,8 @@ var options;
 var directories;
 var settings;
 var home;
+var basketObj = [{name: 'first'}];
+var requestCityId;
 
 var filterArray = [{ name: 1 }, { name: 2 }];
 //==============================================================================
@@ -36,6 +38,8 @@ class LoadingScreen extends React.Component
   {
     this.firstQuery();
   }
+
+  
 
   firstQuery()
   {
@@ -100,6 +104,7 @@ class LoadingScreen extends React.Component
       if (_VALUE !== null) 
       {
         this.setState({ cityID: _VALUE });
+        requestCityId = _VALUE;
       }
     } 
     catch (_er) 
@@ -116,13 +121,28 @@ class LoadingScreen extends React.Component
     {
       if(Object.keys(filterArray).length==Object.keys(home.menu.items).length)
       {
-        const { navigate } = this.props.navigation;
-        navigate('main', { refresh: this, cityName: directories.city.find(_item => _item.id == this.state.cityID).name});
+        this.loadBasketObj();
       }
       else
       {
         this.tabsProduct();
       }
+    }
+  }
+
+  loadBasketObj = async () =>{
+    try
+    {
+      const notArray = await AsyncStorage.getItem('@MySuperStore:basketObj');
+      var array = JSON.parse(notArray);
+      basketObj = array;
+      const { navigate } = this.props.navigation;
+      navigate('main', { refresh: this, cityName: directories.city.find(_item => _item.id == this.state.cityID).name});
+
+    }
+    catch (er)
+    {
+      Alert.alert('Система обнаружения проблем', 'Вот что обнаружено: ' + er.toString());
     }
   }
 
@@ -208,7 +228,16 @@ class MainScreen extends React.Component{
   render()
   {
     return(
-      <MainForm sliderData = { home.slider }  filterArray = { filterArray } requestUrls = {options.urls} requestKey = {KEY}/>
+      <MainForm 
+        sliderData = { home.slider }  
+        filterArray = { filterArray } 
+        requestUrls = {options.urls} 
+        requestKey = {KEY}
+        companyInfo = { settings.company_info }
+        cityName = {this.props.navigation.state.params.cityName}
+        basketObj = { basketObj }
+        requestCityId = {requestCityId}
+      />
     );
   }
 }

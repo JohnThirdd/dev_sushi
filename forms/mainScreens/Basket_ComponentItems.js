@@ -13,7 +13,7 @@ import {
 //==============================================================================
 //==============================================================================
 //==============================================================================
-export default class ComponentItems extends React.Component {
+export default class Basket_ComponentItems extends React.Component {
 
   constructor(props)
   {
@@ -46,15 +46,36 @@ export default class ComponentItems extends React.Component {
             </Text>
 
             <View style={{ flex: 1, alignItems: 'center', flexDirection: 'row',}}>
-              <TouchableOpacity style = {styles.buttonStyle} 
-                onPress={ () => { var _obj = this.props.item; /*_obj.kol=1;*/ this.props.addToBasket(_obj); } }>
+              <TouchableOpacity style = {styles.buttonStyle}
+                onPress = {
+                  () => {
+                    var _obj = this.props.item;
+                    this.props.minusOne(_obj);
+                  }
+                }>
                 <Text style = {{color:'rgb(36, 185, 209)'}}>
-                  в корзину
+                  -
+                </Text>
+              </TouchableOpacity>
+
+              <Text style={styles.kolvo}>
+                {this.props.item.kol}
+              </Text>
+
+              <TouchableOpacity style = {[styles.buttonStyle, {left: 55}]} 
+                onPress = { 
+                  () => { 
+                    var _obj = this.props.item;
+                    this.props.addOne(_obj);
+                  } 
+                }>
+                <Text style = {{color:'rgb(36, 185, 209)'}}>
+                  +
                 </Text>
               </TouchableOpacity>
 
               <Text style={{right: 55, bottom: 12, fontWeight: 'bold', position: 'absolute'}}>
-                от {this.props.item.prices[0].price}
+                {this.props.item.prices[0].price * this.props.item.kol}
               </Text>
             </View>
           </View>
@@ -108,11 +129,20 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     margin:1,
     padding:2,
-    width: 100,
+    width: 25,
     alignItems: 'center',
     borderColor: 'rgb(36, 185, 209)',
     borderRadius: 5,
     justifyContent: 'center',
+  },
+
+  kolvo:{
+    bottom: 10,
+    position: 'absolute',
+    left: 35,
+    justifyContent: 'center',
+    padding:2,
+    margin:1,
   },
 });
 //==============================================================================
