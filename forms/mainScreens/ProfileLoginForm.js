@@ -10,23 +10,48 @@ export default class ProfileLoginForm extends React.Component {
   render() {
     return (
           <View style={styles.container}>
-            <View style={styles.header}>
-              <Image
-              resizeMode={'contain'} 
-              source={require('./checked.png')}
-              style={
-                {
-                  width: 50,
-                  height: 50,
-                  marginBottom: 15,
-                }}/>
-              <Text style={styles.boldText}>{this.props.profileToken.info.user_name}</Text>
-            </View>
-            <View>
-              <TouchableOpacity style={styles.buttonStyle} onPress={()=>{this.props.exit()}}>
-                <Text style = {styles.buttonText}>Выйти</Text>
+            <ScrollView>
+              <View style={styles.header}>
+                <Image
+                resizeMode={'contain'} 
+                source={require('./checked.png')}
+                style={
+                  {
+                    width: 50,
+                    height: 50,
+                    marginBottom: 15,
+                  }}/>
+                <Text style={styles.boldText}>{this.props.profileToken.info.user_name}</Text>
+              </View>
+
+              <TouchableOpacity style={styles.firstText}>
+                <Text>
+                  История заказов
+                </Text>
               </TouchableOpacity>
-            </View>
+
+              <View style={styles.firstText}>
+                <Text>
+                  Ваши баллы: 0
+                </Text>
+              </View>
+
+              <View style={styles.firstText}>
+                <Text>
+                  Ваш город: {this.props.cityName}
+                </Text>
+              </View>
+
+              <View style={styles.container2}>
+                <TouchableOpacity style={styles.buttonStyle} onPress={()=>{this.props.exit()}}>
+                  <Text style = {styles.buttonText}>Настройка</Text>
+                </TouchableOpacity>
+
+                <TouchableOpacity style={styles.buttonStyle} onPress={()=>{this.props.exit()}}>
+                  <Text style = {styles.buttonText2}>Выйти</Text>
+                </TouchableOpacity>
+              </View>
+            </ScrollView>
           </View>
     );
   }
@@ -54,7 +79,7 @@ const styles = StyleSheet.create({
     //justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: 'white', 
-    height: Dimensions.get('window').height,
+    //height: Dimensions.get('window').height,
   },
 
   buttonStyle: {
@@ -68,11 +93,26 @@ const styles = StyleSheet.create({
     padding: 5,
   },
 
+  firstText: {
+    position: 'relative',
+    padding: 20,
+    paddingRight: 100,
+    borderBottomWidth:2,
+    borderBottomColor: '#ededed'
+  },
+
   header: {
     backgroundColor: 'rgb(36, 185, 209)',
     width: Dimensions.get('window').width,
     height: 150,
     justifyContent: 'center',
+    alignItems: 'center',
+  },
+
+  buttonText2:{
+    alignSelf: 'center',
+    justifyContent: 'center',
+    color: 'red',
     alignItems: 'center',
   },
 
@@ -88,11 +128,14 @@ const styles = StyleSheet.create({
     color: 'white',
   },
 
-  justText:{
-    marginLeft: 5,
-    marginBottom: 10,
-    color: 'gray',
-  }
+  container2: {
+    flex: 1,
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'white', 
+    //height: Dimensions.get('window').height,
+  },
 });
 
 

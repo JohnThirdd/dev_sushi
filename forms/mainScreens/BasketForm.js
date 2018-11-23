@@ -49,6 +49,21 @@ class BasketForm extends React.Component {
     this.setState({sum: _sum});
   }
 
+  basketForQuery(){
+    var _basketForQuery = '';
+    this.props.basketObj.map((_item, _i) => {
+      if(_i!=0){
+        if(_i==1){
+          _basketForQuery = _item.prices[0].id + '-' + _item.kol;
+        }
+        else{
+          _basketForQuery = _basketForQuery + ';' + _item.prices[0].id + '-' + _item.kol;
+        }
+      }
+    });
+    alert(_basketForQuery);
+  }
+
   orderRequest(){
     return fetch(this.props.orderRequestUrl + '?key=' + this.props.requestKey + '&city_id='+this.props.requestCityId)
       .then((response) => response.json())
@@ -130,6 +145,12 @@ class BasketForm extends React.Component {
           </View>
 
           <View style={[styles.footerBut, {flexDirection: 'column', alignItems: 'center',}]}>
+
+            <TouchableOpacity style={[styles.buttonStyle, {width:Dimensions.get('window').width-30} ]}
+              onPress = { () => {this.basketForQuery()} }>
+              <Text style = {styles.buttonText}>Проверить на изменение</Text>
+            </TouchableOpacity>
+
             <TouchableOpacity style={[styles.buttonStyle, {width:Dimensions.get('window').width-30} ]}
               onPress = { () => {this.setState({modalVisible: !this.state.modalVisible})} }>
               <Text style = {styles.buttonText}>Оформить заказ</Text>

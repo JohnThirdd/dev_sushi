@@ -8,7 +8,7 @@ var url;
 var key;
 var cityId;
 
-export default class RegForm extends React.Component {
+export default class LogForm extends React.Component {
 
   constructor(props)
   {
@@ -19,25 +19,19 @@ export default class RegForm extends React.Component {
       name: '',
       phone: '',
       email: '',
-      password1: '',
-      password2: '',
+      password: '',
     }
   }
 
-  registration(){
+  joinLogin(){
     if(this.state.password1!=this.state.password2){
       Alert.alert('Ошибка', 'Пароли не совподают');
     }
     else{
-      if(this.state.name!=''&&this.state.phone!=''&&this.state.password1!=''&&this.state.email!=''){
+      if(this.state.password!=''&&this.state.email!=''){
         string = 'key='+key
           +'&login='+this.state.email.replace(/\s/g, '')
-          +'&password='+this.state.password2
-          +'&email='+this.state.email.replace(/\s/g, '')
-          +'&user_name='+this.state.name
-          +'&first_name='+this.state.name
-          +'&phone='+this.state.phone
-          +'&city_id='+cityId;
+          +'&password='+this.state.password;
           this.postQuery(url,string);
       }
       else{
@@ -77,7 +71,7 @@ export default class RegForm extends React.Component {
   }
 
   componentWillMount(){
-    url = this.props.requestUrls.find(_item => _item.name == 'url_user_registration').url;;
+    url = this.props.requestUrls.find(_item => _item.name == 'url_user_login').url;;
     key = this.props.requestKey;
     cityId = this.props.requestCityId;
   }
@@ -85,15 +79,6 @@ export default class RegForm extends React.Component {
   render() {
     return (
           <View style={styles.container}>
-            <TextInput 
-              onChangeText = {(name) => this.setState({name})}
-              value = {this.state.name}
-              style = {styles.textInputStyle}
-              placeholder = 'имя'
-              placeholderTextColor = '#ededed'
-              maxLength = {23}
-              underlineColorAndroid='rgb(36, 185, 209)'>
-            </TextInput>
 
             <TextInput 
               onChangeText = {(email) => this.setState({email})}
@@ -106,18 +91,8 @@ export default class RegForm extends React.Component {
             </TextInput>
 
             <TextInput 
-              onChangeText = {(phone) => this.setState({phone})}
-              value = {this.state.phone}
-              style = {styles.textInputStyle}
-              placeholder = 'телефон'
-              placeholderTextColor = '#ededed'
-              maxLength = {23}
-              underlineColorAndroid='rgb(36, 185, 209)'>
-            </TextInput>
-
-            <TextInput 
-              onChangeText = {(password1) => this.setState({password1})}
-              value = {this.state.password1}
+              onChangeText = {(password) => this.setState({password})}
+              value = {this.state.password}
               style = {styles.textInputStyle}
               placeholder = 'пароль'
               placeholderTextColor = '#ededed'
@@ -126,19 +101,8 @@ export default class RegForm extends React.Component {
               underlineColorAndroid='rgb(36, 185, 209)'>
             </TextInput>
 
-            <TextInput 
-              onChangeText = {(password2) => this.setState({password2})}
-              value = {this.state.password2}
-              style = {styles.textInputStyle}
-              placeholder = 'повтори пароль'
-              placeholderTextColor = '#ededed'
-              secureTextEntry = { true }
-              maxLength = {23}
-              underlineColorAndroid='rgb(36, 185, 209)'>
-            </TextInput>
-
-            <TouchableOpacity style={styles.buttonStyle} onPress={()=>this.registration()}>
-              <Text style = {styles.buttonText}>Регистрация</Text>
+            <TouchableOpacity style={styles.buttonStyle} onPress={()=>this.joinLogin()}>
+              <Text style = {styles.buttonText}>Войти</Text>
             </TouchableOpacity>
 
             <TouchableOpacity style={styles.buttonStyle} onPress={()=>{this.props.close()}}>

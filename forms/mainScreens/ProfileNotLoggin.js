@@ -1,6 +1,7 @@
 import React from 'react';
 import { StyleSheet, Image, Text, View, TouchableOpacity, Dimensions, ScrollView, Animated, Modal } from 'react-native';
 import RegForm from './RegForm';
+import LogForm from './LogForm';
 //==============================================================================
 //==============================================================================
 //==============================================================================
@@ -59,6 +60,7 @@ export default class ProfileNotLoggin extends React.Component {
     this.state = 
     {
       modalVisible: false,
+      logVisible: false,
     }
   }
 
@@ -77,7 +79,7 @@ export default class ProfileNotLoggin extends React.Component {
 
             <Text style={{alignItems: 'center'}}> Авторизация </Text>
 
-            <TouchableOpacity style={styles.buttonStyle} onPress={()=>this.props.vari(vremenniyObj)}>
+            <TouchableOpacity style={styles.buttonStyle} onPress={()=>{this.setState({logVisible:!this.state.logVisible})}}>
               <Text style = {styles.buttonText}>Войти</Text>
             </TouchableOpacity>
 
@@ -96,6 +98,20 @@ export default class ProfileNotLoggin extends React.Component {
                 requestKey={this.props.requestKey}
                 requestCityId={this.props.requestCityId}
                 regSuccess={(_regSuccess)=>{this.setState({modalVisible: !this.state.modalVisible}); this.props.regSuccess(_regSuccess);}}/>
+            </Modal>
+
+
+            <Modal
+            animationType="slide"
+            transparent={true}
+            visible={this.state.logVisible}
+            onRequestClose={() => this.setState({logVisible: !this.state.logVisible})}>
+              <LogForm 
+                close={() => this.setState({logVisible: !this.state.logVisible})}
+                requestUrls={this.props.requestUrls}
+                requestKey={this.props.requestKey}
+                requestCityId={this.props.requestCityId}
+                regSuccess={(_regSuccess)=>{this.setState({logVisible: !this.state.logVisible}); this.props.regSuccess(_regSuccess);}}/>
             </Modal>
           </View>
     );

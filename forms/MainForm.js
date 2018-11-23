@@ -247,6 +247,7 @@ class ProfileScreen extends React.Component
           requestUrls={requestUrls} 
           requestKey={requestKey}
           requestCityId={requestCityId}
+          cityName = {cityName}
           saveToken={(_token)=>this.saveToken(_token)}/>
       </Provider>
     );
