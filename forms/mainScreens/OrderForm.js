@@ -1,7 +1,8 @@
 import React from 'react';
+
 import { 
   StyleSheet, 
-  Image, 
+  Image,
   View, 
   AppRegistry, 
   Text, 
@@ -9,7 +10,8 @@ import {
   ScrollView, 
   Dimensions, 
   TouchableOpacity,
-  AsyncStorage } from 'react-native';
+  AsyncStorage,
+  Modal } from 'react-native';
 //==============================================================================
 //==============================================================================
 //==============================================================================
@@ -22,6 +24,7 @@ export default class OrderForm extends React.Component {
     {
       numArray: [0,1],
       basketArray: ['1'],
+      modalVisible: false,
     }
   }
 
@@ -41,13 +44,17 @@ export default class OrderForm extends React.Component {
           </View>
 
           <View style = {styles.buttonOrder}>
-            <Text>
-              {this.props.orderList.delivery_list.items[0].name}
-            </Text>
-            
-            <Text>
-              Наличным при получении
-            </Text>
+            <TouchableOpacity style={styles.firstText} onPress={() => { this.props.openAdress(); }}>
+              <Text>
+                {this.props.orderList.delivery_list.items[0].name}
+              </Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity style={styles.firstText}>
+              <Text>
+                {this.props.orderList.delivery_list.items[1].name}
+              </Text>
+            </TouchableOpacity>
           </View>
         </View>
     );
@@ -72,7 +79,7 @@ const styles = StyleSheet.create({
   buttonOrder: {
     flex: 1,
     backgroundColor: 'white',
-    alignItems: 'center',
+    //alignItems: 'center',
     height: 145,
     width: Dimensions.get('window').width,
     //justifyContent: 'center',
@@ -83,12 +90,10 @@ const styles = StyleSheet.create({
 
   firstText: {
     position: 'relative',
-    padding: 10,
+    padding: 20,
     paddingRight: 100,
     borderBottomWidth:2,
-    borderBottomColor: '#ededed',
-    flexDirection: 'row',
-    width: Dimensions.get('window').width,
+    borderBottomColor: '#ededed'
   },
 
   textStyle: {

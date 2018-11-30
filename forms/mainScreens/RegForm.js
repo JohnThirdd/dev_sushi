@@ -77,7 +77,7 @@ export default class RegForm extends React.Component {
   }
 
   componentWillMount(){
-    url = this.props.requestUrls.find(_item => _item.name == 'url_user_registration').url;;
+    url = this.props.requestUrls.find(_item => _item.name == 'url_user_registration').url;
     key = this.props.requestKey;
     cityId = this.props.requestCityId;
   }
@@ -191,7 +191,6 @@ const styles = StyleSheet.create({
   textInputStyle: 
   {
     alignSelf: 'stretch',
-    
     padding: 20,
   },
 });

@@ -1,5 +1,17 @@
 import React from 'react';
-import { StyleSheet, Alert, AsyncStorage, Image, Text, View, TouchableOpacity, Dimensions, ScrollView, Animated, Modal } from 'react-native';
+import { 
+  StyleSheet, 
+  Alert, 
+  AsyncStorage, 
+  Image, 
+  Text, 
+  View, 
+  TouchableOpacity, 
+  Dimensions, 
+  ScrollView, 
+  Animated, 
+  Modal,
+  TextInput } from 'react-native';
 import Basket_ComponentItems from './Basket_ComponentItems';
 import EmptyBasketForm from './Empty_BasketForm';
 import OrderForm from './OrderForm';
@@ -21,6 +33,10 @@ class BasketForm extends React.Component {
       basketObj: this.props.basketObj,
       sum: 0,
       modalVisible: false,
+      modalVisible2: false,
+      prospect:'',
+      street:'',
+      cw:'',
       ifChange: false,
     }
   }
@@ -61,7 +77,7 @@ class BasketForm extends React.Component {
         }
       }
     });
-    alert(_basketForQuery);
+    return _basketForQuery;
   }
 
   orderRequest(){
@@ -79,6 +95,58 @@ class BasketForm extends React.Component {
       .catch((_error) =>{
         Alert.alert('Ошибка','Проверьте сеть');
     });
+  }
+
+  orderCreate(){
+    if(this.state.prospect != '')
+    {
+      _address = 'Пр. ' + this.state.prospect + ', ' + 'д.' + this.state.street + ', ' + 'кв.' + this.state.cw;
+      _string = 'key=' + this.props.requestKey
+      + '&cart=' + this.basketForQuery()
+      + '&token=' + this.props.info.info.token
+      + '&cityId=' + this.props.requestCityId
+      + '&address=' + _address;
+      _url = this.props.requestUrls.find(_item => _item.name == 'url_order').url;
+      this.orderQuery(_url,_string);
+    }
+    else
+    {
+      //this.setState({modalVisible2: !this.state.modalVisible2});
+      Alert.alert('Ошибка', 'Заполните все поля');
+    }
+  }
+
+  orderQuery(URLPost, str)
+  {
+    var request = new XMLHttpRequest();
+    request.onreadystatechange = (e) => {
+      if (request.readyState !== 4) {
+        return;
+      }
+
+      if (request.status === 200) {
+        var obj =  JSON.parse(request.responseText);
+        if(obj.error != null)
+        {
+          this.setState({modalVisible2: !this.state.modalVisible2});
+          alert(obj.error.message)
+        }
+        else
+        {
+          //alert('Твой токен\n' + obj.user.info.token);
+          this.setState({modalVisible2: !this.state.modalVisible2});
+          alert('готово');
+        }
+      } 
+      else {
+        this.setState({modalVisible2: !this.state.modalVisible2});
+        console.log('error, ' + request.responseText);
+      }
+    };
+
+    request.open('POST', URLPost);
+    request.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+    request.send(str); 
   }
 
   saveBasket = async () =>{
@@ -147,7 +215,7 @@ class BasketForm extends React.Component {
           <View style={[styles.footerBut, {flexDirection: 'column', alignItems: 'center',}]}>
 
             <TouchableOpacity style={[styles.buttonStyle, {width:Dimensions.get('window').width-30} ]}
-              onPress = { () => {this.basketForQuery()} }>
+              onPress = { () => {alert(this.basketForQuery());} }>
               <Text style = {styles.buttonText}>Проверить на изменение</Text>
             </TouchableOpacity>
 
@@ -161,11 +229,62 @@ class BasketForm extends React.Component {
         <Modal
         animationType="slide"
         transparent={true}
+        visible={this.state.modalVisible2}
+        onRequestClose={() => this.setState({modalVisible2: !this.state.modalVisible2})}>
+          <View style={styles.adressContainer}>
+            <TextInput 
+              onChangeText = {(prospect) => this.setState({prospect})}
+              value = {this.state.prospect}
+              style = {styles.textInputStyle}
+              placeholder = 'проспект'
+              placeholderTextColor = 'gray'
+              maxLength = {23}
+              underlineColorAndroid='rgb(36, 185, 209)'>
+            </TextInput>
+
+            <TextInput 
+              onChangeText = {(street) => this.setState({street})}
+              value = {this.state.street}
+              style = {styles.textInputStyle}
+              placeholder = 'дом'
+              placeholderTextColor = 'gray'
+              maxLength = {23}
+              underlineColorAndroid='rgb(36, 185, 209)'>
+            </TextInput>
+
+            <TextInput 
+              onChangeText = {(cw) => this.setState({cw})}
+              value = {this.state.cw}
+              style = {styles.textInputStyle}
+              placeholder = 'квартира'
+              placeholderTextColor = 'gray'
+              maxLength = {23}
+              underlineColorAndroid='rgb(36, 185, 209)'>
+            </TextInput>
+
+            <View style={{flexDirection: 'row', justifyContent: 'center',}}>
+              <TouchableOpacity style={[styles.buttonStyle, {width:150} ]}
+                onPress = { () => {this.orderCreate()} }>
+                <Text style = {styles.buttonText}>Оформить заказ</Text>
+              </TouchableOpacity>
+
+              <TouchableOpacity style={[styles.buttonStyle, {width:150} ]}
+                onPress = { () => {this.setState({modalVisible2: !this.state.modalVisible2})} }>
+                <Text style = {styles.buttonText}>Отмена</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </Modal>
+
+        <Modal
+        animationType="slide"
+        transparent={true}
         visible={this.state.modalVisible}
         onRequestClose={() => this.setState({modalVisible: !this.state.modalVisible})}>
           <OrderForm 
             cityName = {this.props.cityName} 
             closeOrder = {() => this.setState({modalVisible: !this.state.modalVisible})}
+            openAdress = {() => {this.setState({modalVisible: !this.state.modalVisible}); this.setState({modalVisible2: !this.state.modalVisible2})}}
             orderList = {orderList}/>
         </Modal>
       </View>
@@ -189,6 +308,15 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
     justifyContent: 'center',
     alignItems: 'center',
+    backgroundColor: 'white', 
+    height: Dimensions.get('window').height,
+  },
+
+  adressContainer: {
+    flex: 1,
+    flexDirection: 'column',
+    justifyContent: 'center',
+    //alignItems: 'center',
     backgroundColor: 'white', 
     height: Dimensions.get('window').height,
   },
@@ -240,6 +368,12 @@ const styles = StyleSheet.create({
     paddingRight: 100,
     //borderTopWidth:2,
     //borderTopColor: '#ededed'
+  },
+
+  textInputStyle: 
+  {
+    alignSelf: 'stretch',
+    padding: 20,
   },
 });
 

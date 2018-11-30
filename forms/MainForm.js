@@ -63,17 +63,19 @@ const stateProfile = {
 const reducer = (state = initialState, action) =>{
   switch(action.type){
     case 'PLUS_C':
-      return {basketObj: basketObj, sum: sum, info: state.info + 1}
+      return {basketObj: basketObj, sum: sum, info: stateProfile.profileToken}
     case 'MINUS_C':
-      return {info: 4}
+      return {basketObj: state.basketObj, sum: state.sum,info: userInfo}
   }
   return state
 }
 const profileInfo = (state = stateProfile, action) =>{
   switch(action.type){
     case 'PLUS_C':
+      store.dispatch({type: 'MINUS_C'});
       return {profileToken: action.vari}
     case 'MINUS_C':
+      store.dispatch({type: 'MINUS_C'});
       return {profileToken: userInfo}
   }
   return state
@@ -336,6 +338,7 @@ class BasketScreen extends React.Component
           requestKey = {requestKey}
           requestCityId = {requestCityId}
           ifChange = {ifChange}
+          requestUrls = {requestUrls}
         />
       </Provider>
     );
